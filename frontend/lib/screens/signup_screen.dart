@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../repositories/auth_repository.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -18,7 +18,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
 
-  final _supabase = Supabase.instance.client;
+  final AuthRepository _authRepository = AuthRepository();
 
   @override
   void dispose() {
@@ -37,13 +37,13 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     try {
-      await _supabase.auth.signUp(
-        email: _emailController.text,
-        password: _passwordController.text,
-        data: {'name': _nameController.text},
+      final user = await _authRepository.signUp(
+        _emailController.text,
+        _passwordController.text,
+        _nameController.text,
       );
-      
-      if (mounted) {
+
+      if (user != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created! Please check your email to confirm.')),
         );
@@ -73,8 +73,8 @@ class _SignupScreenState extends State<SignupScreen> {
         title: Row(
           children: [
             Image.asset(
-              'assets/images/logo.png', // Replace with your actual logo image path
-              width: 30, // Adjust size as needed
+              'assets/images/logo.png',
+              width: 30,
               height: 30,
             ),
             const SizedBox(width: 8),

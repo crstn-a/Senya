@@ -25,35 +25,40 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
 
-    try {
-      final user = await _authRepository.login(
-        _emailController.text,
-        _passwordController.text,
+  try {
+    final user = await _authRepository.login(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    if (user != null && mounted) {
+      // Store user profile data
+      Navigator.pushReplacementNamed(
+        context,
+        '/home',
+        arguments: user, // Pass user data to home screen
       );
-
-      if (user != null && mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${error.toString()}')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    }
+  } catch (error) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${error.toString()}')),
+      );
+    }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
