@@ -6,11 +6,11 @@ class SuccessPasswordScreen extends StatelessWidget {
   final VoidCallback onButtonPressed;
 
   const SuccessPasswordScreen({
-    Key? key,
+    super.key,
     required this.message,
     required this.buttonText,
     required this.onButtonPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class SuccessPasswordScreen extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            Container(
+            SizedBox(
               width: 80,
               height: 80,
               child: Image.asset(

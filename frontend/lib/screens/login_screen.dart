@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import '../repositories/auth_repository.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isLoading = false;
 
-  final _supabase = Supabase.instance.client;
+  final AuthRepository _authRepository = AuthRepository();
 
   @override
   void dispose() {
@@ -32,14 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await _supabase.auth.signInWithPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      final user = await _authRepository.login(
+        _emailController.text,
+        _passwordController.text,
       );
-      
-      if (mounted) {
-        // Navigate to main app screen after successful login
-        // You'll need to create this screen
+
+      if (user != null && mounted) {
         Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (error) {
@@ -66,8 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Row(
           children: [
             Image.asset(
-              'assets/images/logo.png', // Replace with your actual logo image path
-              width: 30, // Adjust size as needed
+              'assets/images/logo.png',
+              width: 30,
               height: 30,
             ),
             const SizedBox(width: 8),
