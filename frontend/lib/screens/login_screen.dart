@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -61,23 +61,37 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         title: Row(
           children: [
-            Container(
-              width: 80,
-              height: 80,
-              child: Image.asset(
-                'assets/images/LOGO.png',
-              ),
+            Image.asset(
+              'assets/images/logo.png', // Replace with your actual logo image path
+              width: 30, // Adjust size as needed
+              height: 30,
             ),
             const SizedBox(width: 8),
-            const Text('SENYA', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'SENYA',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pushNamed(context, '/signup'),
-            child: const Text('Sign Up'),
+            child: const Text(
+              'Sign Up',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
+            ),
           ),
         ],
       ),
