@@ -27,7 +27,7 @@ class AuthRepository {
           'name': name,
           'streaks': 0, // Default streaks
           'hearts': 5, // Default hearts
-          'gems': 0, // Default gems
+          'rubies': 0, // Default rubies
           'avatar': null, // Default avatar
         })
         .select();

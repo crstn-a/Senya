@@ -4,7 +4,7 @@ class User {
   final String? name;
   final int streaks;
   final int hearts;
-  final int gems;
+  final int rubies;
   final String? avatar;
 
   User({
@@ -13,7 +13,7 @@ class User {
     this.name,
     required this.streaks,
     required this.hearts,
-    required this.gems,
+    required this.rubies,
     this.avatar,
   });
 
@@ -24,7 +24,7 @@ class User {
       name: json['name'],
       streaks: json['streaks'] ?? 0,
       hearts: json['hearts'] ?? 5,
-      gems: json['gems'] ?? 0,
+      rubies: json['rubies'] ?? 0,
       avatar: json['avatar'],
     );
   }
@@ -36,7 +36,7 @@ class User {
       'name': name,
       'streaks': streaks,
       'hearts': hearts,
-      'gems': gems,
+      'rubies': rubies,
       'avatar': avatar,
     };
   }
