@@ -5,44 +5,48 @@ import '../services/supabase_service.dart';
 class AuthRepository {
   final SupabaseService _supabaseService = SupabaseService();
 
-  Future<my_models.User?> signUp(String email, String password, String name) async {
-    try {
-      final response = await _supabaseService.client.auth.signUp(
-        email: email,
-        password: password,
-        data: {'name': name},
-      );
+ Future<my_models.User?> signUp(String email, String password, String name) async {
+  try {
+    final response = await _supabaseService.client.auth.signUp(
+      email: email,
+      password: password,
+      data: {'name': name},
+    );
 
-      final user = response.user;
-      if (user == null) {
-        throw AuthException('User creation failed');
-      }
+    print("Sign-up response: $response");
 
-      // Insert profile into 'profiles' table
-      final profileInsertResponse = await _supabaseService.client
-          .from('profiles')
-          .insert({
-            'id': user.id,
-            'email': email,
-            'name': name,
-            'streaks': 0, // Default streaks
-            'hearts': 5, // Default hearts
-            'rubies': 0, // Default rubies
-            'avatar': null, // Default avatar
-          })
-          .select();
-
-      if (profileInsertResponse.isEmpty) {
-        throw AuthException('Failed to insert profile into database');
-      }
-
-      return my_models.User.fromJson(profileInsertResponse.first);
-    } on AuthException catch (e) {
-      throw Exception('Auth error during signup: ${e.message}');
-    } catch (e) {
-      throw Exception('Unexpected error during signup: $e');
+    final user = response.user;
+    if (user == null) {
+      throw Exception('User is null. Check if email is already registered.');
     }
+
+    print("User ID: ${user.id}");
+
+    final profileInsertResponse = await _supabaseService.client
+        .from('profiles')
+        .insert({
+          'id': user.id,
+          'email': email,
+          'name': name,
+          'streaks': 1,
+          'hearts': 5,
+          'rubies': 50,
+          'avatar': null,
+        })
+        .select();
+
+    print("Profile insert response: $profileInsertResponse");
+
+    if (profileInsertResponse.isEmpty) {
+      throw Exception('Profile creation failed.');
+    }
+
+    return my_models.User.fromJson(profileInsertResponse.first);
+  } catch (e) {
+    print("Signup error: $e");
+    throw Exception('Unexpected error during signup: $e');
   }
+}
 
   Future<my_models.User?> login(String email, String password) async {
     try {
@@ -51,20 +55,18 @@ class AuthRepository {
         password: password,
       );
 
-      final user = response.user;
-      if (user == null) {
-        throw AuthException('Invalid credentials');
+      if (response.user != null) {
+        return my_models.User.fromJson({
+          'id': response.user!.id,
+          'email': email,
+        });
       }
-
-      return my_models.User.fromJson({
-        'id': user.id,
-        'email': email,
-      });
     } on AuthException catch (e) {
-      throw Exception('Authentication failed: ${e.message}');
+      throw Exception(e.message);
     } catch (e) {
       throw Exception('Unexpected error: $e');
     }
+    return null;
   }
 
   Future<void> logout() async {
